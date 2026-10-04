@@ -1,0 +1,2 @@
+subjectAltName=DNS:app.diddybois.test,DNS:api.diddybois.test
+extendedKeyUsage=serverAuth
