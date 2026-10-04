@@ -1,0 +1,19 @@
+digraph G {
+  rankdir=LR;
+
+  C [label="Client"];
+  D [label="DNS\nUDP 53"];
+  T [label="TCP\n8443"];
+  TLS [label="TLS"];
+  N [label="nginx\nLoad Balancer"];
+  A [label="Backend A\n3001"];
+  B [label="Backend B\n3002"];
+
+  C -> D [label="app.diddybois.test"];
+  D -> C [label="10.7.10.154"];
+  C -> T [label="SYN/SYN-ACK/ACK"];
+  T -> TLS [label="TLS handshake"];
+  TLS -> N [label="Encrypted HTTPS"];
+  N -> A [label="Round Robin"];
+  N -> B [label="Round Robin"];
+}

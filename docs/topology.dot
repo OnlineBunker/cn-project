@@ -1,0 +1,14 @@
+digraph G {
+    rankdir=LR;
+
+    C [label="Client - Mac 1 / Mac 4"];
+    D [label="Mac 1 - Private DNS - UDP 53"];
+    E [label="Mac 2 - nginx Edge - HTTPS 8443"];
+    A [label="Mac 3 - Backend A - HTTP 3001"];
+    B [label="Mac 4 - Backend B - HTTP 3002"];
+
+    C -> D [label="DNS query"];
+    D -> E [label="app.diddybois.test resolves to 10.7.10.154"];
+    E -> A [label="HTTP"];
+    E -> B [label="HTTP"];
+}
