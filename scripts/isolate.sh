@@ -16,12 +16,12 @@ case $1 in
       echo "pass in quick inet proto tcp from $MAC2_IP to any port $port"
       echo "block return in quick inet proto tcp from any to any port $port"
     } > $BK/pf.cn.conf
-    pfctl -nf $BK/pf.cn.conf && pfctl -f $BK/pf.cn.conf && { pfctl -e 2>&1 | grep -v "already" ; true; }
-    echo "isolation active: only $MAC2_IP may reach :$port"; pfctl -sr 2>/dev/null | tail -4;;
+    pfctl -nf $BK/pf.cn.conf 2>/dev/null && pfctl -f $BK/pf.cn.conf 2>&1 | grep -viE "ALTQ|flushing|ruleset added|pf.conf for further|^$"; pfctl -e 2>&1 | grep -viE "already|ALTQ|^$"
+    echo "isolation active: only $MAC2_IP may reach :$port"; pfctl -sr 2>/dev/null | tail -3;;
   rollback)
     [ -f $BK/pf.conf.orig ] || { echo "no backup found"; exit 1; }
-    pfctl -f $BK/pf.conf.orig 2>&1 | grep -v "^No ALTQ"
-    grep -qi disabled $BK/state.before.txt && pfctl -d 2>&1 | grep -v "^No ALTQ"
+    pfctl -f $BK/pf.conf.orig 2>&1 | grep -viE "ALTQ|flushing|ruleset added|pf.conf for further|^$"
+    grep -qi disabled $BK/state.before.txt && pfctl -d 2>&1 | grep -viE "ALTQ|^$"
     echo "rolled back to original firewall config"; pfctl -s info 2>/dev/null | grep -i "^Status";;
   status) pfctl -s info 2>/dev/null | grep -i "^Status"; pfctl -sr 2>/dev/null | grep -i "port = " || echo "(no CN rules)";;
   *) echo "usage: sudo $0 apply A|B | rollback | status";;

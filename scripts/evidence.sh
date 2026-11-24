@@ -10,7 +10,7 @@ res=$(osascript -e "tell application \"Terminal\" to activate" \
   -e "tell application \"Terminal\" to do script \"cd $ROOT && ${pre}bash $script; touch $done_f\"")
 wid=$(echo "$res" | grep -o 'window id [0-9]*' | grep -o '[0-9]*')
 [ -z "$wid" ] && { echo "could not open window"; exit 1; }
-osascript -e "tell application \"Terminal\" to set bounds of window id $wid to {60,60,1100,860}" >/dev/null
+osascript -e "tell application \"Terminal\" to set bounds of window id $wid to {40,40,1100,1000}" >/dev/null
 for i in $(seq 1 180); do [ -f "$done_f" ] && break; sleep 2; done
 [ -f "$done_f" ] || { echo "timed out waiting for window $wid"; exit 1; }
 osascript -e "tell application \"Terminal\" to set index of window id $wid to 1" >/dev/null; sleep 1
