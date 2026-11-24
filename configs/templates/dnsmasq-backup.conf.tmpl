@@ -1,0 +1,17 @@
+# Backup DNS - Mac 4 (@MAC4_IP@) - identical records to primary
+listen-address=127.0.0.1,@MAC4_IP@
+bind-interfaces
+no-resolv
+server=1.1.1.1
+server=8.8.8.8
+domain-needed
+bogus-priv
+local=/@DOMAIN@/
+# Records live in a hosts file so Extension B can change them and SIGHUP dnsmasq
+addn-hosts=@RUN_DIR@/records.hosts
+no-hosts
+# Short TTL so caching and cutover behaviour is visible (Extension B)
+local-ttl=@DNS_TTL@
+log-queries
+log-facility=@RUN_DIR@/dnsmasq.log
+pid-file=@RUN_DIR@/dnsmasq.pid

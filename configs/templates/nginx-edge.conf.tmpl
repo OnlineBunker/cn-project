@@ -1,0 +1,42 @@
+# Edge reverse proxy + load balancer. Same file runs on the primary edge (Mac 2) and the standby edge (Mac 3).
+worker_processes 1;
+pid @RUN_DIR@/nginx.pid;
+error_log @RUN_DIR@/nginx-error.log info;
+events { worker_connections 1024; }
+http {
+    access_log @RUN_DIR@/nginx-access.log;
+    client_body_temp_path @RUN_DIR@/tmp_body;
+    proxy_temp_path       @RUN_DIR@/tmp_proxy;
+    fastcgi_temp_path     @RUN_DIR@/tmp_fcgi;
+    uwsgi_temp_path       @RUN_DIR@/tmp_uwsgi;
+    scgi_temp_path        @RUN_DIR@/tmp_scgi;
+
+    upstream team_backends {
+        # round-robin (default). A backend that fails once is skipped for 5s (passive health check).
+        server @MAC3_IP@:@BACKEND_A_PORT@ max_fails=1 fail_timeout=5s;   # Backend A
+        server @MAC4_IP@:@BACKEND_B_PORT@ max_fails=1 fail_timeout=5s;   # Backend B
+    }
+
+    server {
+        listen @EDGE_PORT@ ssl;
+        server_name @APP_HOST@ @API_HOST@;
+        ssl_certificate     @CERT_DIR@/app.@DOMAIN@.crt;
+        ssl_certificate_key @CERT_DIR@/app.@DOMAIN@.key;
+        ssl_protocols TLSv1.2 TLSv1.3;
+
+        location / {
+            proxy_pass http://team_backends;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto https;
+            # Extension D: on error/timeout/5xx from one backend, retry on the other
+            proxy_next_upstream error timeout http_502 http_503 http_504;
+            proxy_next_upstream_tries 2;
+            proxy_connect_timeout 2s;
+            proxy_read_timeout 5s;
+            add_header X-Edge $hostname always;   # which edge machine answered (Extension E)
+        }
+    }
+}
