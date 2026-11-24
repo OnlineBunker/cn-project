@@ -1,0 +1,25 @@
+# Network inventory - preet-mac2-edge - 2026-11-24 13:54:24 IST
+hostname:   Preets-MacBook-Pro
+interface:  en0
+ipv4:       10.7.29.194
+netmask:    0xffffe000  (hex; 0xffffe000 = /19)
+mac addr:   3a:30:d1:ec:aa:07
+gateway:    10.7.0.1
+dns order:  8.8.8.8 10.5.7.1 
+
+## reachability (ping -c2)
+Mac1 10.7.21.158    2 packets transmitted, 2 packets received, 0.0% packet loss avg 21.071/60.770/100.469/39.699
+
+Mac2 10.7.29.194    2 packets transmitted, 2 packets received, 0.0% packet loss avg 0.365/0.385/0.405/0.020
+
+Mac3 10.7.26.199    2 packets transmitted, 2 packets received, 0.0% packet loss avg 11.011/52.728/94.446/41.718
+
+Mac4 10.7.21.79     2 packets transmitted, 2 packets received, 0.0% packet loss avg 121.221/158.422/195.622/37.201
+
+
+## listening services of interest
+COMMAND     PID         USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+nginx     25747 preetvardhan    6u  IPv4 0xb0f482329b657ee3      0t0  TCP *:8443 (LISTEN)
+nginx     25748 preetvardhan    6u  IPv4 0xb0f482329b657ee3      0t0  TCP *:8443 (LISTEN)
+
+## name resolution from this Mac
