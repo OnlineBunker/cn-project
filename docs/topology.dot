@@ -8,7 +8,7 @@ digraph G {
     B [label="Mac 4 - Backend B - HTTP 3002"];
 
     C -> D [label="DNS query"];
-    D -> E [label="app.diddybois.test resolves to 10.7.10.154"];
+    D -> E [label="app.diddybois.test resolves to 10.7.29.194"];
     E -> A [label="HTTP"];
     E -> B [label="HTTP"];
 }
